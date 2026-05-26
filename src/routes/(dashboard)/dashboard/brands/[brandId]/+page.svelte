@@ -31,7 +31,7 @@
 
 	{#if !data.brand.hasStripeKeys}
 		<div class="notice">
-			⚠ Stripe keys not configured — paid events won't work until you add them below.
+			Stripe keys not configured — you can save all other settings now, but you'll need to add keys before selling paid tickets.
 		</div>
 	{/if}
 

@@ -1,9 +1,11 @@
 import { db } from '$lib/db';
 import { brand, event } from '$lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { canCreateBrand } from '$lib/tiers';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
+	const upgradeReason = url.searchParams.get('upgrade');
 	const brands = await db.query.brand.findMany({
 		where: eq(brand.producerId, locals.user!.id),
 		with: {
@@ -28,8 +30,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 		(e) => e.ticketTypes.length > 0 && e.status === 'draft'
 	)?.id;
 
+	const tier = (locals.user as any).subscriptionTier ?? 'free';
+	const canAddBrand = canCreateBrand(tier, brands.length);
+
 	return {
 		brands,
+		canAddBrand,
+		upgradeReason,
 		// null once the producer has published their first event — checklist goes away
 		onboarding: hasPublished
 			? null

@@ -3,6 +3,14 @@
 
 	let { data }: { data: PageData } = $props();
 
+	const upgradeBannerMsg = $derived(
+		data.upgradeReason === 'brands'
+			? "You've reached your brand limit on the free plan. Upgrade to add more brands."
+			: data.upgradeReason === 'events'
+				? "You've reached your active event limit on the free plan. Upgrade to create more events."
+				: null
+	);
+
 	const ob = $derived(data.onboarding);
 	const step = $derived(
 		!ob ? 5
@@ -83,9 +91,20 @@
 	</div>
 {/if}
 
+{#if upgradeBannerMsg}
+	<div class="upgrade-banner">
+		{upgradeBannerMsg}
+		<a href="/dashboard/billing">View plans →</a>
+	</div>
+{/if}
+
 <div class="dash-header">
 	<h1>Dashboard</h1>
-	<a href="/dashboard/brands/new" class="btn">+ New brand</a>
+	{#if data.canAddBrand}
+		<a href="/dashboard/brands/new" class="btn">+ New brand</a>
+	{:else}
+		<span class="btn btn-disabled" title="Upgrade your plan to add more brands">+ New brand</span>
+	{/if}
 </div>
 
 {#if data.brands.length === 0}
@@ -166,10 +185,25 @@
 	}
 	.step-btn:hover { background: #333; }
 
+	/* Upgrade banner */
+	.upgrade-banner {
+		background: #fffbeb;
+		border: 1px solid #fde68a;
+		border-radius: 8px;
+		padding: 0.75rem 1rem;
+		font-size: 0.875rem;
+		margin-bottom: 1.5rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.upgrade-banner a { color: #92400e; font-weight: 500; }
+
 	/* Dashboard header + grid */
 	.dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
 	h1 { margin: 0; }
 	.btn { padding: 0.5rem 1rem; background: #111; color: #fff; text-decoration: none; border-radius: 6px; font-size: 0.875rem; }
+	.btn-disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
 	.empty-text { color: #6b7280; font-size: 0.9rem; }
 	.brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
 	.brand-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.25rem; border: 1px solid #e5e7eb; border-radius: 10px; text-decoration: none; color: inherit; }
