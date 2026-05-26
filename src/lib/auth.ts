@@ -19,16 +19,18 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
-		requireEmailVerification: process.env.NODE_ENV === 'production'
+		requireEmailVerification: process.env.NODE_ENV === 'production',
+		sendResetPassword: async ({ user: u, url }) => {
+			const { sendEmail, buildPasswordResetEmail } = await import('$lib/email');
+			const email = buildPasswordResetEmail(url);
+			await sendEmail({ to: u.email, ...email });
+		}
 	},
 	emailVerification: {
 		sendVerificationEmail: async ({ user: u, url }) => {
-			const { sendEmail } = await import('$lib/email');
-			await sendEmail({
-				to: u.email,
-				subject: 'Verify your account',
-				text: `Click to verify: ${url}`
-			});
+			const { sendEmail, buildVerificationEmail } = await import('$lib/email');
+			const email = buildVerificationEmail(url);
+			await sendEmail({ to: u.email, ...email });
 		}
 	},
 	databaseHooks: {

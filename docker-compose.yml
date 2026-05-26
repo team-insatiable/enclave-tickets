@@ -11,6 +11,8 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
       MINIO_BUCKET: enclave
+      SMTP_HOST: mail
+      SMTP_PORT: 1025
     env_file:
       - .env
     depends_on:
@@ -18,6 +20,8 @@ services:
         condition: service_healthy
       storage:
         condition: service_healthy
+      mail:
+        condition: service_started
     restart: unless-stopped
 
   db:
@@ -53,6 +57,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  mail:
+    image: axllent/mailpit:latest
+    ports:
+      - '1025:1025'  # SMTP (matches SMTP_PORT in .env)
+      - '8025:8025'  # Web UI — open http://localhost:8025 to read emails
     restart: unless-stopped
 
 volumes:
