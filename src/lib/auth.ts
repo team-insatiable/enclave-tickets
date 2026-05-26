@@ -19,7 +19,7 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
-		requireEmailVerification: true
+		requireEmailVerification: process.env.NODE_ENV === 'production'
 	},
 	emailVerification: {
 		sendVerificationEmail: async ({ user: u, url }) => {
@@ -31,11 +31,20 @@ export const auth = betterAuth({
 			});
 		}
 	},
+	databaseHooks: {
+		user: {
+			create: {
+				before: async (user) => ({
+					data: { ...user, role: 'producer' }
+				})
+			}
+		}
+	},
 	user: {
 		additionalFields: {
 			role: {
 				type: 'string',
-				defaultValue: 'attendee',
+				defaultValue: 'producer',
 				input: false
 			},
 			stripeCustomerId: { type: 'string', required: false, input: false },

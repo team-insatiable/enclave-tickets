@@ -25,7 +25,7 @@
 		}
 		submitting = true;
 		error = '';
-		const res = await fetch(`/t/${data.event.slug}/checkout`, {
+		const res = await fetch('./checkout', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({ firstName, lastName, email, phone, ageAcknowledged, selectedTypes })

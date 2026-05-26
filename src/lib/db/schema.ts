@@ -133,9 +133,10 @@ export const brand = pgTable(
 		emailSenderName: text('email_sender_name').notNull(),
 		emailReplyTo: text('email_reply_to').notNull(),
 		paymentProvider: paymentProviderEnum('payment_provider').notNull().default('stripe'),
-		// Encrypted at rest using ENCRYPTION_KEY
+		// All three Stripe fields encrypted at rest using ENCRYPTION_KEY
 		stripePublishableKey: text('stripe_publishable_key'),
 		stripeSecretKey: text('stripe_secret_key'),
+		stripeWebhookSecret: text('stripe_webhook_secret'),
 		dbblEnabled: boolean('dbbl_enabled').notNull().default(true),
 		dbblThreshold: real('dbbl_threshold').notNull().default(0.7),
 		dbblAction: dbblActionEnum('dbbl_action').notNull().default('flag'),
