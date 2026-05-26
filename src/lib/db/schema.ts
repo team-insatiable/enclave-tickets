@@ -59,6 +59,8 @@ export const ticketStatusEnum = pgEnum('ticket_status', [
 
 export const dbblActionTakenEnum = pgEnum('dbbl_action_taken', ['passed', 'flagged', 'blocked']);
 
+export const adminRoleEnum = pgEnum('admin_role', ['super_admin', 'support', 'viewer']);
+
 // ─── Better Auth core tables (required) ───────────────────────────────────────
 
 export const user = pgTable('user', {
@@ -68,6 +70,7 @@ export const user = pgTable('user', {
 	emailVerified: boolean('email_verified').notNull().default(false),
 	image: text('image'),
 	role: text('role').notNull().default('attendee'),
+	adminRole: adminRoleEnum('admin_role'),
 	// Producer subscription fields
 	stripeCustomerId: text('stripe_customer_id'),
 	subscriptionStatus: subscriptionStatusEnum('subscription_status').default('active'),

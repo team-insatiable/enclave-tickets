@@ -49,6 +49,7 @@ export const auth = betterAuth({
 				defaultValue: 'producer',
 				input: false
 			},
+			adminRole: { type: 'string', required: false, input: false },
 			stripeCustomerId: { type: 'string', required: false, input: false },
 			subscriptionStatus: { type: 'string', defaultValue: 'active', input: false },
 			subscriptionTier: { type: 'string', defaultValue: 'free', input: false },
